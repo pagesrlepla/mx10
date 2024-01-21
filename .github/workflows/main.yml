@@ -1,0 +1,30 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: pub-hk-ubuntu-22.04-small
+    strategy:
+      fail-fast: false
+      matrix:
+         go: [1.11]
+         flag: [A]
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        run: |
+          URI_ENCODED_BUILDPACK_NAME='heroku%2Fpython'
+          VERSION=$(
+            curl --silent --show-error --fail --retry 3 --retry-connrefused --connect-timeout 10 \
+                -H 'Accept: application/vnd.heroku+json; version=3.buildpack-registry' \
+                "https://buildpack-registry.heroku.com/buildpacks/${URI_ENCODED_BUILDPACK_NAME}/revisions" \
+              | jq --exit-status --raw-output 'max_by(.release) | .release'
+          )
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
