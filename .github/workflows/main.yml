@@ -8,7 +8,7 @@ on:
 jobs:
   prepare-release:
     name: Prepare Release
-    runs-on: pub-hk-ubuntu-22.04-small
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
